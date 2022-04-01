@@ -21,12 +21,15 @@ WHERE
 
 #4 Find all employees hired in the 90s and born on Christmas. Use datediff() function to find how many days they have been working at the company (Hint: You will also need to use NOW() or CURDATE()),
 
-SELECT 
-    *, DATEDIFF(CURDATE(), hire_date) / 365 AS tenure
+SELECT
+	first_name,
+    last_name,
+    DATEDIFF(now(), hire_date) as 'days_with_company'
 FROM
     employees
 WHERE
-    hire_date LIKE '199%-12-25';
+	hire_date like '199%'
+    and birth_date LIKE '%-12-25';
 
 #5 Find the smallest and largest current salary from the salaries table.
 
@@ -47,7 +50,8 @@ SELECT
                     SUBSTR(last_name, 1, 4),
                     '_',
                     SUBSTR(birth_date, 6, 2),
-                    SUBSTR(birth_date, 3, 2))) AS username
+                    SUBSTR(birth_date, 3, 2)))
+                    AS username, first_name, birth_date
 FROM
     employees;
 
