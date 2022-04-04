@@ -69,6 +69,73 @@ having count(username) > 1
 order by count(username);
 
 
+SELECT 
+	LOWER(
+			CONCAT(
+				SUBSTR(first_name, 1, 1),
+				SUBSTR(last_name, 1, 4),
+				'_',
+				SUBSTR(birth_date, 6, 2),
+				SUBSTR(birth_date, 3, 2)
+				)
+			) AS username,
+            count(*) as count_of_users
+FROM employees
+group by username;
+
+# bonus
+
+SELECT 
+	LOWER(
+			CONCAT(
+				SUBSTR(first_name, 1, 1),
+				SUBSTR(last_name, 1, 4),
+				'_',
+				SUBSTR(birth_date, 6, 2),
+				SUBSTR(birth_date, 3, 2)
+				)
+			) AS username,
+            count(*) as count_of_users
+FROM employees
+group by username
+having count_of_users > 1;
+
+-- BONUS: How many duplicate usernames are there?
+
+select sum(t.count_of_users) as 'total_duplicates',
+count(t.count_of_users) as 'number_of_unique_duplicates'
+from (SELECT 
+	LOWER(
+			CONCAT(
+				SUBSTR(first_name, 1, 1),
+				SUBSTR(last_name, 1, 4),
+				'_',
+				SUBSTR(birth_date, 6, 2),
+				SUBSTR(birth_date, 3, 2)
+				)
+			) AS username,
+            count(*) as count_of_users
+FROM employees
+group by username
+having count_of_users > 1) as t;
+
+# Another solution using MYSQL Window functions:
+# https://dev.mysql.com/doc/refman/8.0/en/window-functions-usage.html
+SELECT 
+	LOWER(
+			CONCAT(
+				SUBSTR(first_name, 1, 1),
+				SUBSTR(last_name, 1, 4),
+				'_',
+				SUBSTR(birth_date, 6, 2),
+				SUBSTR(birth_date, 3, 2)
+				)
+			) AS username,
+            count(*) as count_of_users, sum(count(*)) OVER () 
+FROM employees
+group by username
+having count_of_users > 1;
+
 
 #9 (extra credit) More practice with aggregate functions:
 
