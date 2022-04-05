@@ -84,6 +84,17 @@ SELECT hire_date
 FROM employees 
 WHERE emp_no='101010');
 
+#coorect one because of up to date
+select *
+from employees
+join dept_emp using(emp_no)
+where to_date > now()
+and hire_date =
+	(SELECT hire_date
+FROM employees 
+WHERE emp_no='101010')
+;
+
 
 -- 2)Find all the titles ever held by all current employees with the first name Aamod.
 
@@ -94,6 +105,9 @@ from titles as t
 join employees as e on (t.emp_no = e.emp_no)
 where e.first_name  = 'Aamod' and to_date > now()
 group by title; #simple as grouping how to
+
+
+
 
 
 
@@ -140,7 +154,6 @@ WHERE to_date > NOW()) AND gender = 'F';
 
 
 
-
 -- 5)Find all the employees who currently have a higher salary than the companies overall, historical average salary.
 select avg(salary) from salaries; #up to_date salaries code .... 63810.7448
 
@@ -156,16 +169,33 @@ WHERE
         FROM
             salaries)
         AND s.to_date > NOW();
+        
+Select emp_no
+from salaries s
+join employees e using(emp_no)
+where to_date > now()
+and salary > (select avg(salary) from salaries);
 
 -- 6)How many current salaries are within 1 standard deviation of the current highest salary? (Hint: you can use a built in function to calculate the standard deviation.) What percentage of all salaries is this?
-SELECT MAX(salary)-STDDEV(salary) FROM salaries;
+SELECT MAX(salary) - STDDEV(salary) FROM salaries;
+
+select max(salary) from salaries where to_date > now();
+#158220 max salary
+select stddev(salary) from salaries where to_date > now();
+#current std from highest salary is 17309.959
 
 
-USE employees;
-SELECT COUNT(*),
-COUNT(*) / (SELECT COUNT(*) FROM salaries WHERE to_date > NOW()) * 100
-FROM salaries
-WHERE to_date > NOW() AND salary >(SELECT MAX(salary) - STDDEV(salary) FROM salaries);
+
+# What percentage of all salaries is this? .0346 (his code)
+#correct fromat!!!!
+select (select count(*) from salaries where to_date > now()
+and salary > ((select max(salary) from salaries where to_date > now()) - (select stddev(salary) from salaries where to_date > now()))) / (select count(*) from salaries where to_date > now()) * 100 as percentage;
+
+
+
+
+--  ________________________________________________________________________________
+
 
 /* Hint Number 1 You will likely use a combination of different kinds of subqueries.
 Hint Number 2 Consider that the following code will produce the z score for current salaries.
