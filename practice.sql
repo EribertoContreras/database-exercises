@@ -502,3 +502,35 @@ SELECT COUNT(*),
 COUNT(*) / (SELECT COUNT(*) FROM salaries WHERE to_date > NOW()) * 100
 FROM salaries
 WHERE to_date > NOW() AND salary >(SELECT MAX(salary) - STDDEV(salary) FROM salaries);
+
+
+reate temporary table my_numbers(
+n int unsigned not null
+);
+
+insert into my_numbers(n) values (1), (2), (3), (4), (5);
+
+select * from my_numbers;
+
+-- crud operations
+-- create, read, update, delete
+-- on the data side, well do more reading
+
+update my_numbers
+set n = n * 10;
+
+select * from my_numbers;
+
+#if we are using our own database, youll need to prefix other tables with their db_name
+#if not, youll get access denied 
+#db_name.table_name
+#db_name.table_name.columm_name
+select *
+from employees.employees limit 10;
+
+select * from short_employees; #using ryan database
+
+#another approach, use the db youre querying 
+#then prefix the db_name of your db in front of the temp table, so i dont have to type employees in front of salaries, titles...ect
+
+use employees;
